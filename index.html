@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light">
 <title>2027 Class Calendar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap">
@@ -24,34 +25,6 @@
   --focus:#1f66d1;
   --font:'Lato','Helvetica Neue',Arial,sans-serif;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#16141c; --panel:#1f1c27; --ink:#ece9f2; --muted:#a49eb2; --line:#322e3d; --head:#d9cdfb;
-  --purple:#6a52b8; --slate:#4f7480; --found:#5f8f96; --gray:#3a3644;
-  --virt-bg:#173539; --virt-fg:#bfe3e8;
-  --inp-bg:#3d6672;  --inp-fg:#ffffff;
-  --syn-bg:#2c2347;  --syn-fg:#d9cdfb; --syn-bd:#5a48a0;
-  --icar-bg:#6a4fc4; --icar-fg:#ffffff;
-  --tbd-fg:#cdbdf6;  --tbd-bd:#7a66c2;
-  --com-bg:#163121;  --com-fg:#a6dcb7; --com-bd:#3f8a5b;
-  --mile-bg:#d9a92c; --mile-fg:#241900;
-  --flag-bg:#2f2610; --flag-fg:#f1d58a; --flag-bd:#a57c14;
-  --hol-bg:#3a1d17;  --hol-fg:#f2a896;
-  --brk-bg:#221f2a;  --brk-fg:#8f8a9b; --brk-st:#2a2633;
-  --focus:#7aa7f0; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#16141c; --panel:#1f1c27; --ink:#ece9f2; --muted:#a49eb2; --line:#322e3d; --head:#d9cdfb;
-  --purple:#6a52b8; --slate:#4f7480; --found:#5f8f96; --gray:#3a3644;
-  --virt-bg:#173539; --virt-fg:#bfe3e8;
-  --inp-bg:#3d6672;  --inp-fg:#ffffff;
-  --syn-bg:#2c2347;  --syn-fg:#d9cdfb; --syn-bd:#5a48a0;
-  --icar-bg:#6a4fc4; --icar-fg:#ffffff;
-  --tbd-fg:#cdbdf6;  --tbd-bd:#7a66c2;
-  --com-bg:#163121;  --com-fg:#a6dcb7; --com-bd:#3f8a5b;
-  --mile-bg:#d9a92c; --mile-fg:#241900;
-  --flag-bg:#2f2610; --flag-fg:#f1d58a; --flag-bd:#a57c14;
-  --hol-bg:#3a1d17;  --hol-fg:#f2a896;
-  --brk-bg:#221f2a;  --brk-fg:#8f8a9b; --brk-st:#2a2633;
-  --focus:#7aa7f0; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14px;line-height:1.45;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 56px}
@@ -79,8 +52,12 @@ h1{font-size:30px;letter-spacing:-.01em} h2{font-size:19px}
 .cls .hl{display:block;width:fit-content;margin-top:4px;padding:2px 7px;border-radius:4px;background:var(--mile-bg);color:var(--mile-fg);font-size:11.5px;font-weight:900}
 .c-virt{background:var(--virt-bg);color:var(--virt-fg)}
 .c-inp{background:var(--inp-bg);color:var(--inp-fg)}
+.c-t1{background:#1f4e79;color:#fff}
+.c-t2{background:#0f6b63;color:#fff}
+.c-t3{background:#a84a17;color:#fff}
 .c-syn{background:var(--syn-bg);color:var(--syn-fg);outline:1px solid var(--syn-bd);outline-offset:-1px}
 .c-icar{background:var(--icar-bg);color:var(--icar-fg)}
+.c-vcar{background:var(--bg);color:var(--syn-fg);outline:1px solid var(--line);outline-offset:-1px}
 .c-tbd{background:repeating-linear-gradient(135deg,var(--syn-bg) 0 6px,var(--bg) 6px 12px);color:var(--tbd-fg);outline:1.5px dashed var(--tbd-bd);outline-offset:-1.5px}
 .c-com{background:var(--com-bg);color:var(--com-fg);outline:1.5px dashed var(--com-bd);outline-offset:-1.5px}
 .c-mile{background:var(--mile-bg);color:var(--mile-fg)}
@@ -157,8 +134,11 @@ h1{font-size:30px;letter-spacing:-.01em} h2{font-size:19px}
 
   <div class="legend" aria-label="Key">
     <span class="cls sw c-virt">Virtual Tech Class</span>
-    <span class="cls sw c-inp">Track In Person</span>
+    <span class="cls sw c-t1">Track 1 In Person</span>
+    <span class="cls sw c-t2">Track 2 In Person</span>
+    <span class="cls sw c-t3">Track 3 In Person</span>
     <span class="cls sw c-syn">Synchrony In Person Career Session</span>
+    <span class="cls sw c-vcar">Virtual Career Session</span>
     <span class="cls sw c-icar">In-Person Career Class</span>
     <span class="cls sw c-tbd">Career + Volunteers (virtual or in person)</span>
     <span class="cls sw c-com">Regional Community Day (optional)</span>
@@ -171,12 +151,12 @@ h1{font-size:30px;letter-spacing:-.01em} h2{font-size:19px}
   <main id="cal"></main>
   <section class="ipsec" id="inperson"></section>
 
-  <p class="foot">Mon–Wed in Foundations and Phase weeks are Virtual Tech Classes unless a track is listed, in which case that track meets in person. Every Thursday in Foundations and both Phases is a Synchrony In Person Career Session. Dashed amber notes are tentative.</p>
+  <p class="foot">Mon–Wed in Foundations and Phase weeks are Virtual Tech Classes unless a track is listed, in which case that track meets in person. Every Thursday in Phase 1 and Phase 2 has a Synchrony In Person Career Session. Thursdays also have a Virtual Career Session unless an In-Person Career Class or Career + Volunteers session is scheduled. Foundations Thursdays are Virtual Career Sessions only. Dashed amber notes are tentative.</p>
 </div>
 
 <script>
 const BR=[['brk','Break']], NC=[['brk','No classes']], RET=[['brk','Break','Staff retreat']];
-const T1=[['inp','Track 1 In Person']], T2=[['inp','Track 2 In Person']], T3=[['inp','Track 3 In Person']];
+const T1=[['t1','Track 1 In Person']], T2=[['t2','Track 2 In Person']], T3=[['t3','Track 3 In Person']];
 const CV=['tbd','Career + Volunteers','Virtual or in person'], CC=['icar','In-Person Career Class'], CD=[['com','Regional Community Day','Optional']];
 const SYN=['syn','Synchrony In Person Career Session'];
 const OR=[['mile','Orientation']];
@@ -257,7 +237,10 @@ WEEKS.forEach((w,i)=>{
   w.days=Array.from({length:5},(z,j)=>{
     let p=w.days[j];
     if(p===undefined) p = tc&&j<3 ? [['virt','Virtual Tech Class',w.seg==='foundations'?'Tech Foundations':_]] : [];
-    if(tc&&j===3&&!(p[0]&&p[0][0]==='hol')) p=[SYN,...p];
+    if(tc&&j===3&&!(p[0]&&p[0][0]==='hol')){
+      const career=p.length?p:[['vcar','Virtual Career Session',w.seg==='foundations'?'Careers Foundations':_]];
+      p=w.seg==='foundations'?career:[SYN,...career];
+    }
     return {t:w.start+j*DAY,p};
   });
 });
@@ -291,9 +274,9 @@ function renderCal(){
 function renderInPerson(){
   const all=[]; WEEKS.forEach(w=>w.days.forEach(x=>x.p.forEach(p=>all.push({t:x.t,p,wk:w.wk}))));
   const IP=[
-    ['Track 1 In Person','inp',p=>p[1]==='Track 1 In Person'],
-    ['Track 2 In Person','inp',p=>p[1]==='Track 2 In Person'],
-    ['Track 3 In Person','inp',p=>p[1]==='Track 3 In Person'],
+    ['Track 1 In Person','t1',p=>p[0]==='t1'],
+    ['Track 2 In Person','t2',p=>p[0]==='t2'],
+    ['Track 3 In Person','t3',p=>p[0]==='t3'],
     ['In-Person Career Class','icar',p=>p[0]==='icar'],
     ['Career + Volunteers','tbd',p=>p[0]==='tbd'],
     ['Regional Community Day (optional)','com',p=>p[0]==='com'],
