@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>2027 Class Calendar</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap">
+<style>
+/* Layout: week rows (Mon–Fri) grouped by program segment; each day holds class pills. Tech = slate family, career = purple family. */
+:root{
+  --bg:#ffffff; --panel:#f5f3f7; --ink:#1c1a24; --muted:#5f5a6b; --line:#e6e2ea; --head:#332459;
+  --purple:#332459; --slate:#243a41; --found:#8fb9bf; --gray:#d9d6de;
+  --virt-bg:#ddeef0; --virt-fg:#173f46;
+  --inp-bg:#243a41;  --inp-fg:#ffffff;
+  --syn-bg:#ece5fa;  --syn-fg:#3d2380; --syn-bd:#b9a6ea;
+  --icar-bg:#4a2f8f; --icar-fg:#ffffff;
+  --tbd-fg:#45288a;  --tbd-bd:#9b86d6;
+  --com-bg:#e5f4e9;  --com-fg:#22603a; --com-bd:#5fae7b;
+  --mile-bg:#f5c343; --mile-fg:#3b2a00;
+  --flag-bg:#fff6dc; --flag-fg:#6b4a00; --flag-bd:#e0a81e;
+  --hol-bg:#fde3dc;  --hol-fg:#972e1b;
+  --brk-bg:#f1f0f3;  --brk-fg:#77727f; --brk-st:#e6e4ea;
+  --focus:#1f66d1;
+  --font:'Lato','Helvetica Neue',Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#16141c; --panel:#1f1c27; --ink:#ece9f2; --muted:#a49eb2; --line:#322e3d; --head:#d9cdfb;
+  --purple:#6a52b8; --slate:#4f7480; --found:#5f8f96; --gray:#3a3644;
+  --virt-bg:#173539; --virt-fg:#bfe3e8;
+  --inp-bg:#3d6672;  --inp-fg:#ffffff;
+  --syn-bg:#2c2347;  --syn-fg:#d9cdfb; --syn-bd:#5a48a0;
+  --icar-bg:#6a4fc4; --icar-fg:#ffffff;
+  --tbd-fg:#cdbdf6;  --tbd-bd:#7a66c2;
+  --com-bg:#163121;  --com-fg:#a6dcb7; --com-bd:#3f8a5b;
+  --mile-bg:#d9a92c; --mile-fg:#241900;
+  --flag-bg:#2f2610; --flag-fg:#f1d58a; --flag-bd:#a57c14;
+  --hol-bg:#3a1d17;  --hol-fg:#f2a896;
+  --brk-bg:#221f2a;  --brk-fg:#8f8a9b; --brk-st:#2a2633;
+  --focus:#7aa7f0; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#16141c; --panel:#1f1c27; --ink:#ece9f2; --muted:#a49eb2; --line:#322e3d; --head:#d9cdfb;
+  --purple:#6a52b8; --slate:#4f7480; --found:#5f8f96; --gray:#3a3644;
+  --virt-bg:#173539; --virt-fg:#bfe3e8;
+  --inp-bg:#3d6672;  --inp-fg:#ffffff;
+  --syn-bg:#2c2347;  --syn-fg:#d9cdfb; --syn-bd:#5a48a0;
+  --icar-bg:#6a4fc4; --icar-fg:#ffffff;
+  --tbd-fg:#cdbdf6;  --tbd-bd:#7a66c2;
+  --com-bg:#163121;  --com-fg:#a6dcb7; --com-bd:#3f8a5b;
+  --mile-bg:#d9a92c; --mile-fg:#241900;
+  --flag-bg:#2f2610; --flag-fg:#f1d58a; --flag-bd:#a57c14;
+  --hol-bg:#3a1d17;  --hol-fg:#f2a896;
+  --brk-bg:#221f2a;  --brk-fg:#8f8a9b; --brk-st:#2a2633;
+  --focus:#7aa7f0; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 56px}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+h1,h2{font-weight:900;color:var(--head);margin:0;text-wrap:balance}
+h1{font-size:30px;letter-spacing:-.01em} h2{font-size:19px}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.sub{color:var(--muted);max-width:72ch;margin:6px 0 0}
+
+.timeline{display:flex;height:10px;border-radius:5px;overflow:hidden;gap:2px}
+.timeline span{display:block;height:100%}
+.spans{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:10px}
+.span{all:unset;box-sizing:border-box;cursor:pointer;border:1px solid var(--line);border-top:4px solid var(--sc);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.span:hover{background:var(--panel)}
+.span:focus-visible,.linkbtn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.span .nm{font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.span .wh{font-weight:900;font-size:15px;color:var(--head);font-variant-numeric:tabular-nums}
+.span small{font-size:12px;color:var(--ink)}
+
+.legend{display:flex;flex-wrap:wrap;gap:6px;padding:12px 14px;border:1px solid var(--line);border-radius:12px}
+.legend .sw{font-size:11.5px;padding:3px 8px}
+
+.cls{border-radius:6px;padding:5px 7px;font-weight:700;font-size:12.5px;line-height:1.25}
+.cls small{display:block;font-weight:400;font-size:11px;opacity:.85;margin-top:1px}
+.cls .hl{display:block;width:fit-content;margin-top:4px;padding:2px 7px;border-radius:4px;background:var(--mile-bg);color:var(--mile-fg);font-size:11.5px;font-weight:900}
+.c-virt{background:var(--virt-bg);color:var(--virt-fg)}
+.c-inp{background:var(--inp-bg);color:var(--inp-fg)}
+.c-syn{background:var(--syn-bg);color:var(--syn-fg);outline:1px solid var(--syn-bd);outline-offset:-1px}
+.c-icar{background:var(--icar-bg);color:var(--icar-fg)}
+.c-tbd{background:repeating-linear-gradient(135deg,var(--syn-bg) 0 6px,var(--bg) 6px 12px);color:var(--tbd-fg);outline:1.5px dashed var(--tbd-bd);outline-offset:-1.5px}
+.c-com{background:var(--com-bg);color:var(--com-fg);outline:1.5px dashed var(--com-bd);outline-offset:-1.5px}
+.c-mile{background:var(--mile-bg);color:var(--mile-fg)}
+.c-hol{background:var(--hol-bg);color:var(--hol-fg)}
+.c-brk{background:repeating-linear-gradient(135deg,var(--brk-bg) 0 6px,var(--brk-st) 6px 8px);color:var(--brk-fg)}
+.c-flag{background:var(--flag-bg);color:var(--flag-fg);outline:1.5px dashed var(--flag-bd);outline-offset:-1.5px}
+
+.section{display:flex;flex-direction:column;scroll-margin-top:16px}
+.sechead{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;padding:18px 2px 10px}
+.sechead .meta{color:var(--muted);font-size:13px}
+.grid{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.row{display:grid;grid-template-columns:104px repeat(5,minmax(0,1fr));border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.dayhead{background:var(--purple);color:#fff}
+.dayhead div{padding:8px 10px;font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.wk{padding:10px;display:flex;flex-direction:column;gap:3px;border-right:1px solid var(--line);min-width:0;background:var(--panel)}
+.wk .n{font-weight:900;color:var(--head);font-size:14px}
+.wk .r{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.day{padding:8px;display:flex;flex-direction:column;gap:5px;border-left:1px solid var(--line);min-width:0;min-height:64px}
+.wk + .day{border-left:0}
+.day.off-brk{background:repeating-linear-gradient(135deg,var(--brk-bg) 0 8px,var(--brk-st) 8px 10px)}
+.day.off-hol{background:var(--hol-bg)}
+.offlbl{font-weight:700;font-size:12.5px;line-height:1.25;color:var(--brk-fg)}
+.offlbl small{display:block;font-weight:400;font-size:11px;margin-top:1px}
+.off-hol .offlbl,.off-hol .date{color:var(--hol-fg)}
+.date{font-size:12px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;display:flex;gap:6px}
+.date .dn{display:none}
+.weeknotes{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 10px;border-top:1px dashed var(--line)}
+.weeknotes .cls{font-size:12px}
+
+.ipsec{display:flex;flex-direction:column;gap:12px;margin-top:12px;scroll-margin-top:16px}
+.ipsec > p{margin:0;color:var(--muted);font-size:13px}
+.ipgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px;align-items:start}
+.ipcard{border:1px solid var(--line);border-radius:12px;overflow:hidden;min-width:0}
+.ipcard .cls{border-radius:0;padding:10px 14px;font-size:14px;display:flex;justify-content:space-between;gap:8px;outline-offset:-1.5px}
+.ipcard .cls span{font-weight:400;font-size:12px;opacity:.85;white-space:nowrap}
+.ipcard ol{list-style:none;margin:0;padding:0}
+.ipcard li{padding:7px 14px;border-top:1px solid var(--line);font-size:13px;display:flex;justify-content:space-between;gap:8px;font-variant-numeric:tabular-nums}
+.ipcard li:first-child{border-top:0}
+.ipcard li span{color:var(--muted);font-size:12px}
+.ipcard .more{all:unset;cursor:pointer;display:block;padding:8px 14px;border-top:1px solid var(--line);font-size:12.5px;font-weight:700;color:var(--head);text-decoration:underline}
+.ipcard .more:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
+.foot{font-size:12px;color:var(--muted);max-width:85ch}
+
+@media (max-width:860px){
+  h1{font-size:24px}
+  .row{grid-template-columns:1fr}
+  .dayhead{display:none}
+  .wk{border-right:0;border-bottom:1px solid var(--line);flex-direction:row;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
+  .day{border-left:0;border-top:1px solid var(--line);min-height:0;display:grid;grid-template-columns:58px minmax(0,1fr);gap:4px 10px;align-items:start}
+  .wk + .day{border-top:0}
+  .day > *:not(.date){grid-column:2}
+  .date{grid-row:1 / span 4;flex-direction:column;gap:0}
+  .date .dn{display:block;font-weight:900;color:var(--head);text-transform:uppercase;letter-spacing:.06em;font-size:10.5px}
+  .day.empty{display:none}
+  .weeknotes{order:-1;border-top:0;border-bottom:1px solid var(--line)}
+}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">The Knowledge House · Workforce Programs</div>
+    <h1>2027 Class Calendar</h1>
+    <p class="sub">What fellows have each day, from orientation on January 25 to graduation on September 15.</p>
+  </header>
+
+  <section aria-label="Program year at a glance" style="display:flex;flex-direction:column;gap:12px">
+    <div class="timeline" id="timeline"></div>
+    <div class="spans" id="spans"></div>
+  </section>
+
+  <div class="legend" aria-label="Key">
+    <span class="cls sw c-virt">Virtual Tech Class</span>
+    <span class="cls sw c-inp">Track In Person</span>
+    <span class="cls sw c-syn">Synchrony In Person Career Session</span>
+    <span class="cls sw c-icar">In-Person Career Class</span>
+    <span class="cls sw c-tbd">Career + Volunteers (virtual or in person)</span>
+    <span class="cls sw c-com">Regional Community Day (optional)</span>
+    <span class="cls sw c-mile">Milestone</span>
+    <span class="cls sw c-flag">Tentative</span>
+    <span class="cls sw c-hol">Holiday</span>
+    <span class="cls sw c-brk">Break / no classes</span>
+  </div>
+
+  <main id="cal"></main>
+  <section class="ipsec" id="inperson"></section>
+
+  <p class="foot">Mon–Wed in Foundations and Phase weeks are Virtual Tech Classes unless a track is listed, in which case that track meets in person. Every Thursday in Foundations and both Phases is a Synchrony In Person Career Session. Dashed amber notes are tentative.</p>
+</div>
+
+<script>
+const BR=[['brk','Break']], NC=[['brk','No classes']], RET=[['brk','Break','Staff retreat']];
+const T1=[['inp','Track 1 In Person']], T2=[['inp','Track 2 In Person']], T3=[['inp','Track 3 In Person']];
+const CV=['tbd','Career + Volunteers','Virtual or in person'], CC=['icar','In-Person Career Class'], CD=[['com','Regional Community Day','Optional']];
+const SYN=['syn','Synchrony In Person Career Session'];
+const OR=[['mile','Orientation']];
+const VT=s=>[['virt','Virtual Tech Class',s,1]];
+const H=n=>[['hol',n]];
+const FLAG=t=>['flag',t];
+const _=undefined;
+
+const SEGS=[
+  {id:'orientation',name:'Orientation',c:'var(--mile-bg)'},
+  {id:'foundations',name:'Foundations',c:'var(--found)'},
+  {id:'break-1',name:'Break',c:'var(--gray)'},
+  {id:'phase-one',name:'Phase One',c:'var(--purple)'},
+  {id:'break-2',name:'Break',c:'var(--gray)'},
+  {id:'phase-two',name:'Phase Two',c:'var(--slate)'},
+  {id:'gap',name:'Gap to Graduation',c:'var(--gray)'}
+];
+const SPANS=[
+  {go:'orientation',name:'Orientation',when:'Jan 25 – 27',c:'var(--mile-bg)'},
+  {go:'foundations',name:'Foundations',when:'Feb 1 – 26',c:'var(--found)'},
+  {go:'break-1',name:'Break',when:'Mar 1 – 7',c:'var(--gray)'},
+  {go:'phase-one',name:'Phase 1',when:'Mar 8 – May 28',c:'var(--purple)',sub:'Demo Day May 24 – 25'},
+  {go:'break-2',name:'Break',when:'May 31 – Jun 6',c:'var(--gray)'},
+  {go:'phase-two',name:'Phase 2',when:'Jun 7 – Aug 27',c:'var(--slate)',sub:'Demo Days Aug 18 + 23'},
+  {go:'gap',name:'Graduation',when:'Sep 15',c:'var(--mile-bg)'},
+  {go:'inperson',name:'In-person days',when:'All dates',c:'var(--icar-bg)'}
+];
+
+// Mon..Fri. In teaching weeks: unset Mon–Wed = Virtual Tech Class; Thursday always gets Synchrony, plus any extra listed.
+const WEEKS=[
+ {wk:'Orientation',seg:'orientation',days:[OR,OR,OR,BR,BR]},
+ {wk:'F1',seg:'foundations',days:[]},
+ {wk:'F2',seg:'foundations',days:[]},
+ {wk:'F3',seg:'foundations',days:[H("Presidents' Day")]},
+ {wk:'F4',seg:'foundations',days:[]},
+ {wk:'Break',seg:'break-1',days:[BR,BR,BR,BR,BR]},
+ {wk:'P1 Wk1',seg:'phase-one',days:[_,_,_,[CV]]},
+ {wk:'P1 Wk2',seg:'phase-one',days:[_,_,_,_,CD]},
+ {wk:'P1 Wk3',seg:'phase-one',days:[_,_,_,[CC]]},
+ {wk:'P1 Wk4',seg:'phase-one',flags:['Tentative: build in buffer for Ideathon'],days:[]},
+ {wk:'P1 Wk5',seg:'phase-one',flags:['Tentative: build in buffer for Ideathon'],days:[T1,T2,T3]},
+ {wk:'P1 Wk6',seg:'phase-one',days:[_,_,_,[CV]]},
+ {wk:'P1 Wk7',seg:'phase-one',days:[_,_,_,_,CD]},
+ {wk:'P1 Wk8',seg:'phase-one',days:[_,_,_,[CC]]},
+ {wk:'P1 Wk9',seg:'phase-one',days:[T1,T2,T3]},
+ {wk:'P1 Wk10',seg:'phase-one',days:[_,_,_,[CV]]},
+ {wk:'P1 Wk11',seg:'phase-one',days:[_,_,_,_,CD]},
+ {wk:'P1 Wk12',seg:'phase-one',days:[VT('Demo Day'),VT('Demo Day'),VT('Phase 1 close-out'),[CC]]},
+ {wk:'Break',seg:'break-2',days:[H('Memorial Day'),RET,RET,RET,BR]},
+ {wk:'P2 Wk1',seg:'phase-two',days:[T1,T2,T3]},
+ {wk:'P2 Wk2',seg:'phase-two',days:[_,_,_,[CV],H('Juneteenth (observed)')]},
+ {wk:'P2 Wk3',seg:'phase-two',flags:['Tentative: build in buffer for Hackathon'],days:[_,_,_,_,CD]},
+ {wk:'P2 Wk4',seg:'phase-two',days:[_,_,_,[CC]]},
+ {wk:'P2 Wk5',seg:'phase-two',days:[H('Independence Day (observed)'),T2,T3]},
+ {wk:'P2 Wk6',seg:'phase-two',days:[_,_,_,[CV]]},
+ {wk:'P2 Wk7',seg:'phase-two',days:[_,_,_,_,CD]},
+ {wk:'P2 Wk8',seg:'phase-two',days:[_,_,_,[CC]]},
+ {wk:'P2 Wk9',seg:'phase-two',days:[T1,T2,T3]},
+ {wk:'P2 Wk10',seg:'phase-two',days:[_,_,_,[CV]]},
+ {wk:'P2 Wk11',seg:'phase-two',days:[_,_,VT('Demo Days'),_,CD]},
+ {wk:'P2 Wk12',seg:'phase-two',days:[VT('Demo Days'),VT('Portfolio final touch-ups'),VT('Next steps + program close-out'),[CC]]},
+ {wk:'Gap Wk1',seg:'gap',days:[NC,NC,NC,NC,NC]},
+ {wk:'Gap Wk2',seg:'gap',days:[H('Labor Day'),NC,NC,NC,NC]},
+ {wk:'Graduation',seg:'gap',days:[NC,NC,[['mile','Graduation']]]}
+];
+
+const START=Date.UTC(2027,0,25), DAY=864e5;
+const DN=['Mon','Tue','Wed','Thu','Fri'];
+const fmt=(t,o)=>new Date(t).toLocaleDateString('en-US',Object.assign({timeZone:'UTC'},o));
+const md=t=>fmt(t,{month:'short',day:'numeric'});
+const wmd=t=>fmt(t,{weekday:'short',month:'short',day:'numeric'});
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const teaching=s=>s==='foundations'||s==='phase-one'||s==='phase-two';
+
+WEEKS.forEach((w,i)=>{
+  w.start=START+i*7*DAY; w.flags=w.flags||[];
+  const tc=teaching(w.seg);
+  w.days=Array.from({length:5},(z,j)=>{
+    let p=w.days[j];
+    if(p===undefined) p = tc&&j<3 ? [['virt','Virtual Tech Class',w.seg==='foundations'?'Tech Foundations':_]] : [];
+    if(tc&&j===3&&!(p[0]&&p[0][0]==='hol')) p=[SYN,...p];
+    return {t:w.start+j*DAY,p};
+  });
+});
+
+const pill=([c,l,s,hl])=>`<div class="cls c-${c}">${esc(l)}${s?(hl?`<span class="hl">${esc(s)}</span>`:`<small>${esc(s)}</small>`):''}</div>`;
+
+function renderCal(){
+  let h='';
+  SEGS.forEach(s=>{
+    const ws=WEEKS.filter(w=>w.seg===s.id); if(!ws.length) return;
+    const a=ws[0].start,b=ws[ws.length-1].start+4*DAY;
+    h+=`<section class="section" id="${s.id}"><div class="sechead"><h2>${s.name}</h2><span class="meta">${md(a)} – ${md(b)} · ${ws.length} week${ws.length>1?'s':''}</span></div><div class="grid">`;
+    h+=`<div class="row dayhead" aria-hidden="true"><div>Week</div>${DN.map(x=>`<div>${x}</div>`).join('')}</div>`;
+    ws.forEach(w=>{
+      h+=`<div class="row"><div class="wk"><span class="n">${esc(w.wk)}</span><span class="r">${md(w.start)} – ${md(w.start+4*DAY)}</span></div>`;
+      w.days.forEach((x,j)=>{
+        const only=x.p.length===1?x.p[0][0]:'';
+        const off=only==='hol'?'off-hol':only==='brk'?'off-brk':'';
+        h+=`<div class="day ${off}${x.p.length?'':' empty'}"><div class="date"><span class="dn">${DN[j]}</span><span>${md(x.t)}</span></div>`;
+        h+= off ? `<div class="offlbl">${esc(x.p[0][1])}${x.p[0][2]?`<small>${esc(x.p[0][2])}</small>`:''}</div>` : x.p.map(pill).join('');
+        h+=`</div>`;
+      });
+      if(w.flags.length) h+=`<div class="weeknotes">${w.flags.map(f=>pill(FLAG(f))).join('')}</div>`;
+      h+=`</div>`;
+    });
+    h+=`</div></section>`;
+  });
+  document.getElementById('cal').innerHTML=h;
+}
+
+function renderInPerson(){
+  const all=[]; WEEKS.forEach(w=>w.days.forEach(x=>x.p.forEach(p=>all.push({t:x.t,p,wk:w.wk}))));
+  const IP=[
+    ['Track 1 In Person','inp',p=>p[1]==='Track 1 In Person'],
+    ['Track 2 In Person','inp',p=>p[1]==='Track 2 In Person'],
+    ['Track 3 In Person','inp',p=>p[1]==='Track 3 In Person'],
+    ['In-Person Career Class','icar',p=>p[0]==='icar'],
+    ['Career + Volunteers','tbd',p=>p[0]==='tbd'],
+    ['Regional Community Day (optional)','com',p=>p[0]==='com'],
+    ['Synchrony In Person Career Sessions','syn',p=>p[0]==='syn',6]
+  ];
+  let h=`<h2>In-person and community days</h2><p>Every date each group meets. Career + Volunteers sessions may be virtual or in person.</p><div class="ipgrid">`;
+  IP.forEach(([name,c,f,cap],k)=>{
+    const ds=all.filter(a=>f(a.p));
+    const li=(a,hide)=>`<li${hide?' hidden data-more':''}>${wmd(a.t)}<span>${esc(a.wk)}</span></li>`;
+    h+=`<div class="ipcard"><div class="cls c-${c}">${name}<span>${ds.length} days</span></div><ol>${ds.map((a,i)=>li(a,cap&&i>=cap)).join('')}</ol>${cap&&ds.length>cap?`<button class="more" data-card="${k}">Show all ${ds.length} Thursdays</button>`:''}</div>`;
+  });
+  h+='</div>';
+  const el=document.getElementById('inperson'); el.innerHTML=h;
+  el.addEventListener('click',e=>{
+    const b=e.target.closest('.more'); if(!b) return;
+    const items=b.parentElement.querySelectorAll('[data-more]');
+    const open=b.dataset.open==='1';
+    items.forEach(n=>n.hidden=open);
+    b.dataset.open=open?'0':'1';
+    b.textContent=open?`Show all ${items.length+6} Thursdays`:'Show fewer';
+  });
+}
+
+function renderTop(){
+  document.getElementById('timeline').innerHTML=SEGS.map(s=>{const n=WEEKS.filter(w=>w.seg===s.id).length;return `<span style="flex:${n};background:${s.c}" title="${s.name}: ${n} wk"></span>`}).join('');
+  document.getElementById('spans').innerHTML=SPANS.map(s=>`<button class="span" style="--sc:${s.c}" data-go="${s.go}"><span class="nm">${s.name}</span><span class="wh">${s.when}</span>${s.sub?`<small>${s.sub}</small>`:''}</button>`).join('');
+  document.getElementById('spans').addEventListener('click',e=>{const b=e.target.closest('[data-go]'); if(b) document.getElementById(b.dataset.go).scrollIntoView({block:'start'});});
+}
+
+renderTop(); renderCal(); renderInPerson();
+</script>
+</body>
+</html>
